@@ -1,57 +1,67 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  View,
-  StyleSheet,
-} from 'react-native';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { View, StyleSheet } from 'react-native'
 
-import TagSelectItem from './TagSelectItem';
+import TagSelectItem from './TagSelectItem'
 
 class TagSelect extends React.Component {
   state = {
-    selectedItems: {},
-  };
+    selectedItems: {}
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.selectedItems != null &&
+      this.props.selectedItems != nextProps.selectedItems
+    ) {
+      this.setState({ selectedItems: nextProps.selectedItems })
+    }
+  }
 
   get totalSelected() {
-    return Object.keys(this.state.selectedItems).length;
+    return Object.keys(this.state.selectedItems).length
   }
 
   get itemsSelected() {
-    const items = [];
+    const items = []
 
     Object.entries(this.state.selectedItems).forEach(([key]) => {
-      items.push(this.state.selectedItems[key]);
-    });
+      items.push(this.state.selectedItems[key])
+    })
 
-    return items;
+    return items
   }
 
-  handleSelectItem = (item) => {
-    const selectedItems = Object.assign(this.state.selectedItems, {});
-    const found = this.state.selectedItems[item[this.props.keyAttr]];
+  handleSelectItem = item => {
+    const selectedItems = Object.assign(this.state.selectedItems, {})
+    const found = this.state.selectedItems[item[this.props.keyAttr]]
 
     if (found) {
-      delete selectedItems[item[this.props.keyAttr]];
+      delete selectedItems[item[this.props.keyAttr]]
     } else {
       if (this.props.max && this.totalSelected >= this.props.max) {
-        return this.props.onMaxError();
+        return this.props.onMaxError()
       }
 
-      selectedItems[item[this.props.keyAttr]] = item;
+      selectedItems[item[this.props.keyAttr]] = item
     }
 
-    this.setState({ selectedItems });
-    
-    if (this.props.onItemPress) {
-      return this.props.onItemPress(item);
+    this.setState({ selectedItems })
+
+    if (this.props.onSelectedItemsChanged) {
+      this.props.onSelectedItemsChanged(selectedItems)
     }
-  };
+
+    if (this.props.onItemPress) {
+      return this.props.onItemPress(item)
+    }
+  }
 
   render() {
     return (
       <View style={styles.list}>
-        {this.props.data.map((i) => {
-          return(
+        {this.props.data.map(i => {
+          return (
             <TagSelectItem
               {...this.props}
               label={i[this.props.labelAttr]}
@@ -59,10 +69,10 @@ class TagSelect extends React.Component {
               onPress={this.handleSelectItem.bind(this, i)}
               selected={this.state.selectedItems[i[this.props.keyAttr]] && true}
             />
-            )
+          )
         })}
       </View>
-    );
+    )
   }
 }
 
@@ -76,8 +86,8 @@ TagSelect.propTypes = {
   itemStyle: PropTypes.any,
   itemStyleSelected: PropTypes.any,
   itemLabelStyle: PropTypes.any,
-  itemLabelStyleSelected: PropTypes.any,
-};
+  itemLabelStyleSelected: PropTypes.any
+}
 
 TagSelect.defaultProps = {
   labelAttr: 'label',
@@ -89,15 +99,15 @@ TagSelect.defaultProps = {
   itemStyle: {},
   itemStyleSelected: {},
   itemLabelStyle: {},
-  itemLabelStyleSelected: {},
-};
+  itemLabelStyleSelected: {}
+}
 
 const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-start',
-  },
-});
+    alignItems: 'flex-start'
+  }
+})
 
-export default TagSelect;
+export default TagSelect
