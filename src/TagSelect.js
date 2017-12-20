@@ -9,18 +9,26 @@ class TagSelect extends React.Component {
     selectedItems: {}
   }
 
+  componentWillMount() {
+    this.updateSelection(this.props)
+  }
+
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.selectedItems != null &&
       this.props.selectedItems !== nextProps.selectedItems
     ) {
-      const selectedItems = nextProps.selectedItems.reduce((acc, item) => {
-        acc[item[this.props.keyAttr]] = item
-
-        return acc
-      }, {})
-      this.setState({ selectedItems })
+      this.updateSelection(nextProps)
     }
+  }
+
+  updateSelection = (props = this.props) => {
+    const selectedItems = props.selectedItems.reduce((acc, item) => {
+      acc[item[this.props.keyAttr]] = item
+
+      return acc
+    }, {})
+    this.setState({ selectedItems })
   }
 
   get totalSelected() {
