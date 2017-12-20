@@ -12,13 +12,13 @@ class TagSelect extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.selectedItems != null &&
-      this.props.selectedItems != nextProps.selectedItems
+      this.props.selectedItems !== nextProps.selectedItems
     ) {
       const selectedItems = nextProps.selectedItems.reduce((acc, item) => {
         acc[item[this.props.keyAttr]] = item
 
         return acc
-      })
+      }, {})
       this.setState({ selectedItems })
     }
   }
